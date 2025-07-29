@@ -1,13 +1,14 @@
 import { Permission } from "node-appwrite";
 import { questionAttachmentBucket } from "../name";
 import { storage } from "./config";
+import { AppwriteException } from "node-appwrite";
 
 export default async function getOrCreateStorage() {
     try {
         await storage.getBucket(questionAttachmentBucket);
         console.log("Storage Connected");
     } catch (error) {
-        // if (error.code === 404) {
+        if (error instanceof AppwriteException && error.code === 404) {
             try {
                 await storage.createBucket(
                     questionAttachmentBucket,
@@ -30,10 +31,7 @@ export default async function getOrCreateStorage() {
             } catch (error) {
                 console.error("Error creating storage:", error);
             }
-        // } else {
-        //     console.error("❌ Error accessing bucket:", error);
-
-        // }
+        }
     }
 }
 

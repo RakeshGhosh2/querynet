@@ -27,8 +27,8 @@ const LabelInputContainer = ({
     return <div className={cn("flex w-full flex-col space-y-2", className)}>{children}</div>;
 };
 
-export default function Login() {
-    const { login } = useAuthStore();
+export default function Register() {
+    const { login, createAccount } = useAuthStore();
     const [isLoading, setIsLoading] = React.useState(false);
     const [error, setError] = React.useState("");
 
@@ -36,10 +36,12 @@ export default function Login() {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
+        const firstname = formData.get("firstname");
+        const lastname = formData.get("lastname");
         const email = formData.get("email");
         const password = formData.get("password");
 
-        if (!email || !password) {
+        if (!firstname || !lastname || !email || !password) {
             setError(() => "Please fill out all fields");
             return;
         }
@@ -47,9 +49,19 @@ export default function Login() {
         setIsLoading(() => true);
         setError(() => "");
 
-        const loginResponse = await login(email.toString(), password.toString());
-        if (loginResponse.error) {
-            setError(() => loginResponse.error!.message);
+        const response = await createAccount(
+            `${firstname} ${lastname}`,
+            email.toString(),
+            password.toString()
+        );
+
+        if (response.error) {
+            setError(() => response.error!.message);
+        } else {
+            const loginResponse = await login(email.toString(), password.toString());
+            if (loginResponse.error) {
+                setError(() => loginResponse.error!.message);
+            }
         }
 
         setIsLoading(() => false);
@@ -58,21 +70,31 @@ export default function Login() {
     return (
         <div className="mx-auto w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
             <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-                Login to Riverflow
+                Welcome to Riverflow
             </h2>
             <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-                Login to riverflow
-                <br /> If you don&apos;t have an account,{" "}
-                <Link href="/register" className="text-orange-500 hover:underline">
-                    register
+                Signup with riverflow if you you don&apos;t have an account.
+                <br /> If you already have an account,{" "}
+                <Link href="/login" className="text-orange-500 hover:underline">
+                    login
                 </Link>{" "}
-                with riverflow
+                to riverflow
             </p>
 
             {error && (
                 <p className="mt-8 text-center text-sm text-red-500 dark:text-red-400">{error}</p>
             )}
             <form className="my-8" onSubmit={handleSubmit}>
+                <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
+                    <LabelInputContainer>
+                        <Label htmlFor="firstname">First name</Label>
+                        <Input className="text-black" id="firstname" name="firstname" placeholder="Tyler" type="text" />
+                    </LabelInputContainer>
+                    <LabelInputContainer>
+                        <Label htmlFor="lastname">Last name</Label>
+                        <Input className="text-black" id="lastname" name="lastname" placeholder="Durden" type="text" />
+                    </LabelInputContainer>
+                </div>
                 <LabelInputContainer className="mb-4">
                     <Label htmlFor="email">Email Address</Label>
                     <Input
@@ -93,7 +115,7 @@ export default function Login() {
                     type="submit"
                     disabled={isLoading}
                 >
-                    Log in &rarr;
+                    Sign up &rarr;
                     <BottomGradient />
                 </button>
 
