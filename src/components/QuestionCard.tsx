@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { BorderBeam } from "./magicui/border-beam";
 import Link from "next/link";
 import { Models } from "appwrite";
 import slugify from "@/utils/slugify";
 import { avatars } from "@/models/client/config";
 import convertDateToRelativeTime from "@/utils/relativeTime";
+import { ShineBorder } from "@/components/magicui/shine-border";
 
 const QuestionCard = ({ ques }: { ques: Models.Document }) => {
     const [height, setHeight] = React.useState(0);
@@ -23,7 +23,8 @@ const QuestionCard = ({ ques }: { ques: Models.Document }) => {
             ref={ref}
             className="relative flex flex-col gap-4 overflow-hidden rounded-xl border border-white/20 bg-white/5 p-4 duration-200 hover:bg-white/10 sm:flex-row"
         >
-            <BorderBeam size={height} duration={12} delay={9} />
+          
+            <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
             <div className="relative shrink-0 text-sm sm:text-right">
                 <p>{ques.totalVotes} votes</p>
                 <p>{ques.totalAnswers} answers</p>
@@ -48,7 +49,7 @@ const QuestionCard = ({ ques }: { ques: Models.Document }) => {
                     <div className="ml-auto flex items-center gap-1">
                         <picture>
                             <img
-                                src={avatars.getInitials(ques.author.name, 24, 24).href}
+                                src={avatars.getInitials(ques.author.name, 24, 24)}//href
                                 alt={ques.author.name}
                                 className="rounded-lg"
                             />

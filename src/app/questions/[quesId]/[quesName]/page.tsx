@@ -2,8 +2,8 @@ import Answers from "@/components/Answers";
 import Comments from "@/components/Comments";
 import { MarkdownPreview } from "@/components/RTE";
 import VoteButtons from "@/components/VoteButtons";
-import Particles from "@/components/magicui/particles";
-import ShimmerButton from "@/components/magicui/shimmer-button";
+import {Particles} from "@/components/magicui/particles";
+import {ShimmerButton} from "@/components/magicui/shimmer-button";
 import { avatars } from "@/models/client/config";
 import {
     answerCollection,

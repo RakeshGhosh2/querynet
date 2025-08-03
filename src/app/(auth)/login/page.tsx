@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { useAuthStore } from "@/store/Auth";
 import Link from "next/link";
+import { BorderBeam } from "@/components/magicui/border-beam";
 
 const BottomGradient = () => {
     return (
@@ -57,16 +58,12 @@ export default function Login() {
 
     return (
         <div className="mx-auto w-full max-w-md rounded-none border border-solid border-white/30 bg-white p-4 shadow-input dark:bg-black md:rounded-2xl md:p-8">
-            <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
-                Login to Riverflow
+            <h2 className="text-xl text-center font-bold text-neutral-800 dark:text-neutral-200">
+                Login to QueryNet
             </h2>
-            <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
-                Login to riverflow
-                <br /> If you don&apos;t have an account,{" "}
-                <Link href="/register" className="text-orange-500 hover:underline">
-                    register
-                </Link>{" "}
-                with riverflow
+            <p className="mt-2 max-w-sm text-sm text-center text-neutral-600 dark:text-neutral-300">
+                Login to QueryNet
+                <br /> If you don&apos;t have an account,{" "}register with QueryNet
             </p>
 
             {error && (
@@ -79,7 +76,7 @@ export default function Login() {
                         className="text-black"
                         id="email"
                         name="email"
-                        placeholder="projectmayhem@fc.com"
+                        placeholder="rakeshghosh@gmail.com"
                         type="email"
                     />
                 </LabelInputContainer>
@@ -89,7 +86,7 @@ export default function Login() {
                 </LabelInputContainer>
 
                 <button
-                    className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                    className="group/btn cursor-pointer relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                     type="submit"
                     disabled={isLoading}
                 >
@@ -97,9 +94,19 @@ export default function Login() {
                     <BottomGradient />
                 </button>
 
+                <div className="text-center mt-4">
+                    <Link
+                        href="/register"
+                        className="text-sm text-neutral-600 dark:text-neutral-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 hover:underline"
+                    >
+                        Don&apos;t have an account? Sign up
+                    </Link>
+                </div>
+
+
                 <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
 
-                <div className="flex flex-col space-y-4">
+                {/* <div className="flex flex-col space-y-4">
                     <button
                         className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
                         type="button"
@@ -122,8 +129,20 @@ export default function Login() {
                         </span>
                         <BottomGradient />
                     </button>
-                </div>
+                </div> */}
             </form>
+            <BorderBeam
+                duration={6}
+                size={400}
+                className="from-transparent via-red-500 to-transparent"
+            />
+            <BorderBeam
+                duration={6}
+                delay={3}
+                size={400}
+                borderWidth={2}
+                className="from-transparent via-blue-500 to-transparent"
+            />
         </div>
     );
 }

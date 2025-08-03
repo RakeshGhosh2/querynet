@@ -6,7 +6,7 @@ import { Query } from "node-appwrite";
 import React from "react";
 
 const LatestQuestions = async () => {
-    const questions = await databases.listDocuments(db, questionCollection, [
+    const questions =  await databases.listDocuments(db, questionCollection, [
         Query.limit(5),
         Query.orderDesc("$createdAt"),
     ]);
@@ -44,6 +44,7 @@ const LatestQuestions = async () => {
     console.log(questions)
     return (
         <div className="space-y-6">
+            
             {questions.documents.map(question => (
                 <QuestionCard key={question.$id} ques={question} />
             ))}
