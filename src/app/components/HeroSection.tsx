@@ -1,32 +1,5 @@
 import React from "react";
 import { HeroParallax } from "@/components/ui/hero-parallax";
-import { databases } from "@/models/server/config";
-import { db, questionAttachmentBucket, questionCollection } from "@/models/name";
-import { Query } from "node-appwrite";
-import slugify from "@/utils/slugify";
-import { storage } from "@/models/client/config";
-import HeroSectionHeader from "./HeroSectionHeader";
-
-export default function HeroSection() {
-  //add asyne if needed
-  // const questions = await databases.listDocuments(db, questionCollection, [
-  //     Query.orderDesc("$createdAt"),
-  //     Query.limit(15),
-  // ]);
-
-  return (
-    // <HeroParallax
-    //     header={<HeroSectionHeader />}
-    //     products={questions.documents.map(q => ({
-    //         title: q.title,
-    //         link: `/questions/${q.$id}/${slugify(q.title)}`,
-    //         thumbnail: storage.getFilePreview(questionAttachmentBucket, q.attachmentId),//href
-    //     }))}
-    // />
-    <HeroParallax products={products} />
-  );
-}
-
 
 export const products = [
   {
@@ -34,8 +7,6 @@ export const products = [
     link: "/",
     thumbnail:
       "https://i.pinimg.com/1200x/7d/01/bf/7d01bfd8b503e6ac2a9999b52198bfd9.jpg",
-
-
 
   },
   {
@@ -56,8 +27,7 @@ export const products = [
     title: "Editorially",
     link: "/",
     thumbnail:
-      "https://i.pinimg.com/1200x/b2/6b/5b/b26b5b4f274e7054527f5f0dadaa0dc1.jpg",
-
+      "https://i.pinimg.com/736x/49/9b/0d/499b0df9b88820a893dbd9edf4031b7a.jpg",
 
   },
   {
@@ -92,20 +62,21 @@ export const products = [
     link: "/",
     thumbnail:
       "https://i.pinimg.com/736x/ee/6c/88/ee6c88ef44f7eefe3846484a1107b001.jpg",
-
-
-
   },
   {
     title: "SmartBridge",
     link: "/",
     thumbnail:
       "https://i.pinimg.com/736x/ee/6c/88/ee6c88ef44f7eefe3846484a1107b001.jpg",
-
-
   },
 
-
-
 ];
+
+export default function HeroSection() {
+  
+  return (
+    
+    <HeroParallax products={products} />
+  );
+}
 

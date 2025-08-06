@@ -93,15 +93,7 @@ const HeroSectionHeader = () => {
                                                 Sign up
                                             </span>
                                         </ShimmerButton>
-                                    </Link>
-                                    {/* <Link
-                                        href="/login"
-                                        className="relative rounded-full border border-neutral-200 px-8 py-3 font-medium text-black dark:border-white/[0.2] dark:text-white"
-                                    >
-                                        <span>Login</span>
-                                        <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                                    </Link> */}
-                                    
+                                    </Link>  
                                 </>
                             )}
                         </div>

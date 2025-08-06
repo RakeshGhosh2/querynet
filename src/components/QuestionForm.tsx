@@ -157,8 +157,8 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
     };
 
     return (
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-0 max-w-4xl mx-auto">
-            <form className="space-y-4" onSubmit={submit}>
+        <div className="w-full px-5 sm:px-6 md:px-8 lg:px-10 xl:px-0 py-8 max-w-4xl mx-auto">
+            <form className="space-y-4 " onSubmit={submit}>
                 {error && (
                     <LabelInputContainer>
                         <div className="text-center">
