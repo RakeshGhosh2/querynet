@@ -1,11 +1,12 @@
+// "use client";
 import { avatars } from "@/models/client/config";
 import { users } from "@/models/server/config";
 import { UserPrefs } from "@/store/Auth";
 import convertDateToRelativeTime from "@/utils/relativeTime";
 import React from "react";
-import EditButton from "./EditButton";
 import Navbar from "./Navbar";
 import { IconClockFilled, IconUserFilled } from "@tabler/icons-react";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 const Layout = async ({
     children,
@@ -19,6 +20,7 @@ const Layout = async ({
     return (
         <div className="container mx-auto space-y-4 px-4 pb-20 pt-32">
             <div className="flex flex-col gap-4 sm:flex-row">
+                {/* <BackgroundGradient className="rounded-[22px]  bg-white dark:bg-zinc-900 w-40 shrink-0"> */}
                 <div className="w-40 shrink-0">
                     <picture className="block w-full">
                         <img
@@ -28,6 +30,7 @@ const Layout = async ({
                         />
                     </picture>
                 </div>
+                {/* </BackgroundGradient> */}
                 <div className="w-full">
                     <div className="flex items-start justify-between">
                         <div className="block space-y-0.5">
@@ -43,7 +46,6 @@ const Layout = async ({
                             </p>
                         </div>
                         <div className="shrink-0">
-                            <EditButton />
                         </div>
                     </div>
                 </div>

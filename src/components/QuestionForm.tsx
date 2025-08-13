@@ -84,26 +84,32 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
 
 
     const create = async () => {
-        if (!formData.attachment) throw new Error("Please upload an image");
+        let attachmentId = null;
 
-        const storageResponse = await storage.createFile(
-            questionAttachmentBucket,
-            ID.unique(),
-            formData.attachment
-        );
+        // Upload image only if provided
+        if (formData.attachment) {
+            const storageResponse = await storage.createFile(
+                questionAttachmentBucket,
+                ID.unique(),
+                formData.attachment
+            );
+            attachmentId = storageResponse.$id;
+        }
 
+        // Create document in the database
         const response = await databases.createDocument(db, questionCollection, ID.unique(), {
             title: formData.title,
             content: formData.content,
             authorId: formData.authorId,
             tags: Array.from(formData.tags),
-            attachmentId: storageResponse.$id,
+            attachmentId: attachmentId,
         });
 
         loadConfetti();
 
         return response;
     };
+
 
     const update = async () => {
         if (!question) throw new Error("Please provide a question");
@@ -254,7 +260,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                             }}
                         >
                             <div className="absolute inset-x-0 -top-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-teal-500 to-transparent shadow-2xl" />
-                            <span className="relative z-20">Add</span>
+                            <span className="relative z-20 cursor-pointer">Add</span>
                         </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -287,7 +293,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
                     </div>
                 </LabelInputContainer>
                 <button
-                    className="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                    className="inline-flex h-12 cursor-pointer animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                     type="submit"
                     disabled={loading}
                 >

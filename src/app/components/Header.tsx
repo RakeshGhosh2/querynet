@@ -121,21 +121,7 @@ export default function Header() {
                             </a>
                         ))}
                         <div className="flex w-full flex-col gap-4">
-                            {/*                             
-                            <NavbarButton
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                variant="primary"
-                                className="w-full"
-                            >
-                                Login
-                            </NavbarButton>
-                            <NavbarButton
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                variant="primary"
-                                className="w-full"
-                            >
-                                Sign up
-                            </NavbarButton> */}
+                        
                             {session ? (
                                 <NavbarButton href="/logout"
                                     onClick={() => {
