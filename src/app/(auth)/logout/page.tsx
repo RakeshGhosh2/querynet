@@ -13,7 +13,7 @@ export default function Logout() {
     useEffect(() => {
         const performLogout = async () => {
             await logout(); // Clear session, user, and jwt in Zustand + Appwrite
-            router.push("/login"); // Redirect to login page after logout
+            router.push("/"); // Redirect to login page after logout
         };
 
         performLogout();

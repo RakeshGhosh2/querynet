@@ -57,7 +57,6 @@ export default function Register() {
         );
 
         if (response.error) {
-            // setError(() => response.error!.message);
             toast.error(response.error.message || "Signup failed");
         } else {
             toast.success("Account created successfully!");
@@ -65,7 +64,7 @@ export default function Register() {
             if (loginResponse.error) {
                 setError(() => loginResponse.error!.message);
             }
-            else{
+            else {
                 toast.success("Logged in successfully!");
             }
 
@@ -108,10 +107,13 @@ export default function Register() {
                     <Input className="text-black" id="password" name="password" placeholder="••••••••" type="password" />
                 </LabelInputContainer>
 
+
                 <button
-                    className="group/btn cursor-pointer relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                    className="group/btn cursor-pointer relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]
+                    dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                     type="submit"
                     disabled={isLoading}
+
                 >
                     Sign up &rarr;
                     <BottomGradient />
