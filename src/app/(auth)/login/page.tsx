@@ -1,13 +1,12 @@
 "use client";
-
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { useAuthStore } from "@/store/Auth";
 import Link from "next/link";
 import { BorderBeam } from "@/components/magicui/border-beam";
+import toast from "react-hot-toast";
 
 const BottomGradient = () => {
     return (
@@ -51,6 +50,8 @@ export default function Login() {
         const loginResponse = await login(email.toString(), password.toString());
         if (loginResponse.error) {
             setError(() => loginResponse.error!.message);
+        }else {
+            toast.success("Logged in successfully!");
         }
 
         setIsLoading(() => false);

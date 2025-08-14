@@ -37,7 +37,7 @@ const Footer = () => {
                         </li>
                     ))}
                 </ul>
-                <div className="mt-4 text-center">&copy; {new Date().getFullYear()} Riverpod</div>
+                <div className="mt-4 text-center">&copy; {new Date().getFullYear()} QueryNet</div>
             </div>
             <AnimatedGridPattern
                 numSquares={30}

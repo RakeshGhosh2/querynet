@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Header() {
     const { user, session } = useAuthStore();
@@ -51,10 +52,22 @@ export default function Header() {
             icon: <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />,
         },
 
-        );
+    );
 
     function logout() {
         throw new Error("Function not implemented.");
+    }
+
+    function handleLogout() {
+        toast.success("Logged out successfully!");
+    }
+
+    function handleLogin() {
+        toast.success("Logged in successfully!");
+    }
+
+    function handleSignUp() {
+        toast.success("Account created successfully!");
     }
 
     return (
@@ -80,8 +93,8 @@ export default function Header() {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-                                        <Link href="/logout">
-                                            <AlertDialogAction className="cursor-pointer" >Logout</AlertDialogAction>
+                                        <Link href="/logout" onClick={handleLogout}>
+                                            <AlertDialogAction className="cursor-pointer"  >Logout</AlertDialogAction>
                                         </Link>
 
                                     </AlertDialogFooter>
@@ -89,8 +102,8 @@ export default function Header() {
                             </AlertDialog></>
 
                         ) : (
-                            <><NavbarButton variant="primary" href="/login">Login</NavbarButton>
-                                <NavbarButton variant="primary" href="/register">Sign up</NavbarButton></>
+                            <><NavbarButton variant="primary" href="/login"  >Login</NavbarButton>
+                                <NavbarButton variant="primary" href="/register" >Sign up</NavbarButton></>
                         )}
 
                     </div>
@@ -121,12 +134,13 @@ export default function Header() {
                             </a>
                         ))}
                         <div className="flex w-full flex-col gap-4">
-                        
+
                             {session ? (
                                 <NavbarButton href="/logout"
                                     onClick={() => {
                                         setIsMobileMenuOpen(false);
                                         // logout(); 
+                                        handleLogout()
                                     }}
                                     variant="primary"
                                     className="w-full "
@@ -159,7 +173,6 @@ export default function Header() {
                 </MobileNav>
             </Navbar>
 
-            {/* Navbar */}
         </div>
     );
 }

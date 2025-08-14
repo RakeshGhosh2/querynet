@@ -4,10 +4,10 @@ import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { useAuthStore } from "@/store/Auth";
 import Link from "next/link";
 import { BorderBeam } from "@/components/magicui/border-beam";
+import toast from "react-hot-toast";
 
 const BottomGradient = () => {
     return (
@@ -57,12 +57,18 @@ export default function Register() {
         );
 
         if (response.error) {
-            setError(() => response.error!.message);
+            // setError(() => response.error!.message);
+            toast.error(response.error.message || "Signup failed");
         } else {
+            toast.success("Account created successfully!");
             const loginResponse = await login(email.toString(), password.toString());
             if (loginResponse.error) {
                 setError(() => loginResponse.error!.message);
             }
+            else{
+                toast.success("Logged in successfully!");
+            }
+
         }
 
         setIsLoading(() => false);
@@ -73,15 +79,6 @@ export default function Register() {
             <h2 className="text-xl text-center font-bold text-neutral-800 dark:text-neutral-200">
                 Welcome to QueryNet
             </h2>
-            {/* <p className="mt-2 max-w-sm text-sm text-center text-neutral-600 dark:text-neutral-300">
-                Signup with riverflow if you you don&apos;t have an account.
-                <br /> If you already have an account,{" "}
-                <Link href="/login" className="text-orange-500 hover:underline">
-                    login
-                </Link>{" "}
-                to riverflow
-            </p> */}
-
             {error && (
                 <p className="mt-8 text-center text-sm text-red-500 dark:text-red-400">{error}</p>
             )}
@@ -93,13 +90,13 @@ export default function Register() {
                     </LabelInputContainer>
                     <LabelInputContainer>
                         <Label htmlFor="lastname">Last name</Label>
-                        <Input className="text-black"  id="lastname" name="lastname" placeholder="Ghosh" type="text" />
+                        <Input className="text-black" id="lastname" name="lastname" placeholder="Ghosh" type="text" />
                     </LabelInputContainer>
                 </div>
                 <LabelInputContainer className="mb-4">
                     <Label htmlFor="email">Email Address</Label>
                     <Input
-                    className="text-black" 
+                        className="text-black"
                         id="email"
                         name="email"
                         placeholder="rakeshghosh@gmail.com"
@@ -108,7 +105,7 @@ export default function Register() {
                 </LabelInputContainer>
                 <LabelInputContainer className="mb-4">
                     <Label htmlFor="password">Password</Label>
-                    <Input className="text-black"  id="password" name="password" placeholder="••••••••" type="password" />
+                    <Input className="text-black" id="password" name="password" placeholder="••••••••" type="password" />
                 </LabelInputContainer>
 
                 <button
@@ -120,7 +117,7 @@ export default function Register() {
                     <BottomGradient />
                 </button>
 
-                 <div className="text-center mt-4">
+                <div className="text-center mt-4">
                     <Link
                         href="/login"
                         className="text-sm text-neutral-600 dark:text-neutral-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-300 hover:underline"
@@ -130,46 +127,19 @@ export default function Register() {
                 </div>
 
                 <div className="my-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
-
-                {/* <div className="flex flex-col space-y-4">
-                    <button
-                        className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-                        type="button"
-                        disabled={isLoading}
-                    >
-                        <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-                        <span className="text-sm text-neutral-700 dark:text-neutral-300">
-                            Google
-                        </span>
-                        <BottomGradient />
-                    </button>
-                    <button
-                        className="group/btn relative flex h-10 w-full items-center justify-start space-x-2 rounded-md bg-gray-50 px-4 font-medium text-black shadow-input dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-                        type="button"
-                        disabled={isLoading}
-                    >
-                        <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-                        <span className="text-sm text-neutral-700 dark:text-neutral-300">
-                            GitHub
-                        </span>
-                        <BottomGradient />
-                    </button>
-                    
-                </div> */}
-
             </form>
-             <BorderBeam
-        duration={6}
-        size={400}
-        className="from-transparent via-red-500 to-transparent"
-      />
-      <BorderBeam
-        duration={6}
-        delay={3}
-        size={400}
-        borderWidth={2}
-        className="from-transparent via-blue-500 to-transparent"
-      />
+            <BorderBeam
+                duration={6}
+                size={400}
+                className="from-transparent via-red-500 to-transparent"
+            />
+            <BorderBeam
+                duration={6}
+                delay={3}
+                size={400}
+                borderWidth={2}
+                className="from-transparent via-blue-500 to-transparent"
+            />
         </div>
     );
 }

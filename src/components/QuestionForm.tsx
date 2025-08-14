@@ -15,6 +15,7 @@ import { databases, storage } from "@/models/client/config";
 import { db, questionAttachmentBucket, questionCollection } from "@/models/name";
 import { Confetti } from "@/components/magicui/confetti";
 import confetti from "canvas-confetti";
+import toast from "react-hot-toast";
 
 const LabelInputContainer = ({
     children,
@@ -153,6 +154,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
 
         try {
             const response = question ? await update() : await create();
+            toast.success(`Question ${question ? "updated" : "published"} successfully!`);
 
             router.push(`/questions/${response.$id}/${slugify(formData.title)}`);
         } catch (error: any) {
