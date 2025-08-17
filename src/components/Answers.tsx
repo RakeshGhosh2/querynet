@@ -5,7 +5,6 @@ import React from "react";
 import VoteButtons from "./VoteButtons";
 import { useAuthStore } from "@/store/Auth";
 import { avatars, databases } from "@/models/client/config";
-import { answerCollection, db } from "@/models/name";
 import RTE, { MarkdownPreview } from "./RTE";
 import Comments from "./Comments";
 import slugify from "@/utils/slugify";
