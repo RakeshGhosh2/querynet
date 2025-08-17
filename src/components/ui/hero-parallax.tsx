@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import {
@@ -114,7 +115,7 @@ export const Header = () => {
       <p className="max-w-2xl text-base md:text-xl mt-8  dark:text-neutral-200">
         QueryNet is a global developer community platform where passionate programmers, software engineers, and tech enthusiasts come together to ask questions, 
         share knowledge, and collaborate on meaningful projects.
-        Whether you're a beginner trying to understand the fundamentals or an experienced developer solving complex problems, 
+        Whether you&apos;re a beginner trying to understand the fundamentals or an experienced developer solving complex problems, 
         QueryNet provides a space that supports continuous learning and collaboration.
       </p>
     </div>

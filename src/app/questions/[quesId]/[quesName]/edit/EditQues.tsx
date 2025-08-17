@@ -16,7 +16,8 @@ const EditQues = ({ question }: { question: Models.Document }) => {
         if (question.authorId !== user?.$id) {
             router.push(`/questions/${question.$id}/${slugify(question.title)}`);
         }
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);//change
 
     if (user?.$id !== question.authorId) return null;
 

@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { ID } from "node-appwrite";
 import { UserPrefs } from "@/store/Auth"
 
+
+
 export async function POST(request: NextRequest) {
     try {
         const { questionId, answer, authorId } = await request.json();
@@ -21,6 +23,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(response, { status: 201 });
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return NextResponse.json(
             { error: error?.message || " Error creating answer" },
@@ -49,6 +52,7 @@ export async function DELETE(request: NextRequest) {
 
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         return NextResponse.json(
             { error: error?.message || " Error deleting answer" },

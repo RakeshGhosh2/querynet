@@ -16,6 +16,7 @@ const DeleteQuestion = ({ questionId, authorId }: { questionId: string; authorId
             await databases.deleteDocument(db, questionCollection, questionId);
 
             router.push("/questions");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             window.alert(error?.message || "Something went wrong");
         }

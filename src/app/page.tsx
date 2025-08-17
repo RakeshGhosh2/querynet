@@ -1,4 +1,3 @@
-import Image from "next/image";
 import HeroSectionHeader from "./components/HeroSectionHeader";
 import HeroSection from "./components/HeroSection";
 import LatestQuestions from "./components/LatestQuestions";

@@ -6,7 +6,6 @@ import convertDateToRelativeTime from "@/utils/relativeTime";
 import React from "react";
 import Navbar from "./Navbar";
 import { IconClockFilled, IconUserFilled } from "@tabler/icons-react";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
 
 const Layout = async ({
     children,

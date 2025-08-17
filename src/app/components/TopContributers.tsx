@@ -8,13 +8,7 @@ import { UserPrefs } from "@/store/Auth";
 import convertDateToRelativeTime from "@/utils/relativeTime";
 import { avatars } from "@/models/client/config";
 
-interface Item {
-    name: string;
-    description: string;
-    icon: string;
-    color: string;
-    time: string;
-}
+
 
 const Notification = ({ user }: { user: Models.User<UserPrefs> }) => {
     return (

@@ -3,8 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/Auth";
-import Link from "next/link";
-import { BorderBeam } from "@/components/magicui/border-beam";
 
 export default function Logout() {
     const { logout } = useAuthStore();
@@ -17,7 +15,7 @@ export default function Logout() {
         };
 
         performLogout();
-    }, []);
+    }, [logout, router]);
 
     return (
         <div>

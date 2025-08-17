@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { databases, storage } from "@/models/client/config";
 import { db, questionAttachmentBucket, questionCollection } from "@/models/name";
-import { Confetti } from "@/components/magicui/confetti";
 import confetti from "canvas-confetti";
 import toast from "react-hot-toast";
 
@@ -157,6 +156,7 @@ const QuestionForm = ({ question }: { question?: Models.Document }) => {
             toast.success(`Question ${question ? "updated" : "published"} successfully!`);
 
             router.push(`/questions/${response.$id}/${slugify(formData.title)}`);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             setError(() => error.message);
         }

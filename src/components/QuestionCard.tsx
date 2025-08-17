@@ -9,6 +9,8 @@ import convertDateToRelativeTime from "@/utils/relativeTime";
 import { ShineBorder } from "@/components/magicui/shine-border";
 
 const QuestionCard = ({ ques }: { ques: Models.Document }) => {
+    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [height, setHeight] = React.useState(0);
     const ref = React.useRef<HTMLDivElement>(null);
 
@@ -23,7 +25,7 @@ const QuestionCard = ({ ques }: { ques: Models.Document }) => {
             ref={ref}
             className="relative flex flex-col gap-4 overflow-hidden rounded-xl border border-white/20 bg-white/5 p-4 duration-200 hover:bg-white/10 sm:flex-row"
         >
-          
+        
             <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
             <div className="relative shrink-0 text-sm sm:text-right">
                 <p>{ques.totalVotes} votes</p>

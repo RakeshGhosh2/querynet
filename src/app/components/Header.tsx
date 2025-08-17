@@ -54,21 +54,21 @@ export default function Header() {
 
     );
 
-    function logout() {
-        throw new Error("Function not implemented.");
-    }
+    // function logout() {
+    //     throw new Error("Function not implemented.");
+    // }
 
     function handleLogout() {
         toast.success("Logged out successfully!");
     }
 
-    function handleLogin() {
-        toast.success("Logged in successfully!");
-    }
+    // function handleLogin() {
+    //     toast.success("Logged in successfully!");
+    // }
 
-    function handleSignUp() {
-        toast.success("Account created successfully!");
-    }
+    // function handleSignUp() {
+    //     toast.success("Account created successfully!");
+    // }
 
     return (
 
