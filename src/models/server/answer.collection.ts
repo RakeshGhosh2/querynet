@@ -2,7 +2,6 @@ import {  Permission } from "node-appwrite"
 import { db, answerCollection } from "../name"
 import { databases } from "./config"
 
-
 export default async function createAnswerCollection() {
     // Create a new question collection if it doesn't exist
     await databases.createCollection(db, answerCollection, answerCollection, [

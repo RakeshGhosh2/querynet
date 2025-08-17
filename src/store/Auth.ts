@@ -37,7 +37,6 @@ interface IAuthStore {
 
 }
 
-
 export const useAuthStore = create<IAuthStore>()(
     persist(
         immer((set) => ({
