@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@copilotkit/react-core": "^1.10.2",
-    "@copilotkit/react-ui": "^1.10.2",
     "@mdxeditor/editor": "^3.40.1",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
