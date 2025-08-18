@@ -1,48 +1,19 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next",
-      "config": {
-        "runtime": "nodejs18.x",
-        "memory": 3008,
-        "maxDuration": 30,
-        "includeFiles": [
-          "src/models/server/**",
-          "src/app/env.js"
-        ]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/_not-found",
-      "dest": "/404",
-      "status": 404
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1",
-      "headers": {
-        "Cache-Control": "no-store, max-age=0"
-      }
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "ENABLE_FILE_SYSTEM_API": "1"
-  },
-  "regions": ["iad1"],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
+    "version": "2",
+    "builds": [
         {
-          "key": "X-Client-Type",
-          "value": "nextjs-appwrite"
+            "src": "next.config.js",
+            "use": "@vercel/next"
         }
-      ]
-    }
-  ]
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/"
+        }
+    ]
 }
