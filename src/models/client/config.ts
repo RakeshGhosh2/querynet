@@ -11,4 +11,3 @@ const avatars = new Avatars(client);
 const storage = new Storage(client);
 
 export { account, databases, avatars, storage, client };
-
