@@ -5,7 +5,7 @@ const env = {
         apiKey: String(process.env.APPWRITE_API_KEY),
     },
     copilot: {
-        publicApiKey: process.env.COPILOT_PUBLIC_API_KEY || "",
+        publicApiKey: String(process.env.COPILOT_PUBLIC_API_KEY),
     }
 
 }
