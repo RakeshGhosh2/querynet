@@ -43,6 +43,9 @@ import createVoteCollection from "./vote.collection";
 import { databases } from "./config";
 import { AppwriteException } from "node-appwrite";
 
+export const runtime = "nodejs";
+
+
 export default async function getOrCreateDB() {
     try {
         await databases.get(db);  // Try to get the DB
