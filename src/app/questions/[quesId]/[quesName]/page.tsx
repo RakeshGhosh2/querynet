@@ -24,7 +24,7 @@ import React from "react";
 import DeleteQuestion from "./DeleteQuestion";
 import EditQuestion from "./EditQuestion";
 import { TracingBeam } from "@/components/ui/tracing-beam";
-import { CopilotSidebar } from "@copilotkit/react-ui";
+// import { CopilotSidebar } from "@copilotkit/react-ui";
 
 const Page = async ({ params }: { params: { quesId: string; quesName: string } }) => {
     const [question, answers, upvotes, downvotes, comments] = await Promise.all([
@@ -121,14 +121,14 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
     ]);
 
     return (
-        <CopilotSidebar
-            defaultOpen={false}
-            instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
-            labels={{
-                title: "QueryNet Helper",
-                initial: "How can I help you today?",
-            }}
-        >
+        // <CopilotSidebar
+        //     defaultOpen={false}
+        //     instructions={"You are assisting the user as best as you can. Answer in the best way possible given the data you have."}
+        //     labels={{
+        //         title: "QueryNet Helper",
+        //         initial: "How can I help you today?",
+        //     }}
+        // >
             <TracingBeam className="container pl-6">
                 <Particles
                     className="fixed inset-0 h-full w-full"
@@ -231,7 +231,7 @@ const Page = async ({ params }: { params: { quesId: string; quesName: string } }
                     <Answers answers={answers} questionId={question.$id} />
                 </div>
             </TracingBeam>
-        </CopilotSidebar>
+        // </CopilotSidebar>
     );
 };
 

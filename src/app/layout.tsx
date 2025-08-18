@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
-import { CopilotKit } from "@copilotkit/react-core";
-import "@copilotkit/react-ui/styles.css";
+// import { CopilotKit } from "@copilotkit/react-core";
+// import "@copilotkit/react-ui/styles.css";
 import React from "react";
 
 
@@ -53,14 +53,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={cn(inter.className, "dark:bg-black dark:text-white")}>
         <Header />
-        {/* Only wrap with CopilotKit if API key is available */}
-        {process.env.COPILOT_PUBLIC_API_KEY ? (
-          <CopilotKit publicApiKey={process.env.COPILOT_PUBLIC_API_KEY}>
-            {children}
-          </CopilotKit>
-        ) : (
-          children
-        )}
+        {children}
         <Toaster
           position="top-center"
           reverseOrder={false}
