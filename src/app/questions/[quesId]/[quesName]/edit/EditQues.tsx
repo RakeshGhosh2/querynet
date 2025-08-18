@@ -8,7 +8,8 @@ import { Models } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const EditQues = ({ question }: { question: Models.Document }) => {
+
+const EditQues = ({ question }: { question: Models.Document  & Record<string, any>}) => {
     const { user } = useAuthStore();
     const router = useRouter();
 

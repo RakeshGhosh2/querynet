@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Models } from "appwrite";
+import { Models } from "node-appwrite";
 import slugify from "@/utils/slugify";
 import { avatars } from "@/models/client/config";
 import convertDateToRelativeTime from "@/utils/relativeTime";

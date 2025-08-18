@@ -18,7 +18,7 @@
     "@react-three/fiber": "^9.3.0",
     "@tabler/icons-react": "^3.34.1",
     "@uiw/react-md-editor": "^4.0.8",
-    "appwrite": "^18.1.1",
+    "appwrite": "^18.2.0",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
