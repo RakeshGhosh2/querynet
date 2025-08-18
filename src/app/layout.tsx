@@ -29,26 +29,45 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    // <html lang="en" className="dark">
+
+    //   <body className={cn(inter.className, "dark:bg-black dark:text-white")}>
+
+
+    //     <Header />
+    //     <CopilotKit publicApiKey={process.env.API_KEY}>
+    //       {children}
+    //     </CopilotKit>
+    //     <Toaster
+    //       position="top-center"
+    //       reverseOrder={false}
+    //     />
+    //     <Footer />
+
+
+    //   </body>
+    // </html>
+
+
+
     <html lang="en" className="dark">
-
       <body className={cn(inter.className, "dark:bg-black dark:text-white")}>
-
-
         <Header />
-        <CopilotKit publicApiKey={process.env.API_KEY}>
-          {children}
-        </CopilotKit>
+        {/* Only wrap with CopilotKit if API key is available */}
+        {process.env.COPILOT_PUBLIC_API_KEY ? (
+          <CopilotKit publicApiKey={process.env.COPILOT_PUBLIC_API_KEY}>
+            {children}
+          </CopilotKit>
+        ) : (
+          children
+        )}
         <Toaster
           position="top-center"
           reverseOrder={false}
         />
         <Footer />
-
-
       </body>
     </html>
-
-
   );
 }
 
