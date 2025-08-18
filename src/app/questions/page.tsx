@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+
+
 import { databases, users } from "@/models/server/config";
 import { answerCollection, db, voteCollection, questionCollection } from "@/models/name";
 import { Query } from "node-appwrite";
@@ -10,7 +13,6 @@ import Pagination from "@/components/Pagination";
 import Search from "./Search";
 
 
-export const dynamic = "force-dynamic";
 
 
 const Page = async ({
