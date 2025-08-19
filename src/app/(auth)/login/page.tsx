@@ -148,6 +148,9 @@
 //     );
 // }
 
+
+
+// src/app/(auth)/login/page.tsx
 "use client";
 import React from "react";
 import { Label } from "@/components/ui/label";
@@ -180,7 +183,7 @@ const LabelInputContainer = ({
 
 export default function Login() {
     const { login } = useAuthStore();
-    const router = useRouter();
+    // const router = useRouter();
     const [isLoading, setIsLoading] = React.useState(false);
     const [error, setError] = React.useState("");
 
@@ -192,38 +195,32 @@ export default function Login() {
         const password = formData.get("password");
 
         if (!email || !password) {
-            setError(() => "Please fill out all fields");
+            setError("Please fill out all fields");
             return;
         }
 
-        setIsLoading(() => true);
-        setError(() => "");
+        setIsLoading(true);
+        setError("");
 
         try {
             const loginResponse = await login(email.toString(), password.toString());
             if (loginResponse.error) {
-                setError(() => loginResponse.error!.message);
+                setError(loginResponse.error.message);
+                toast.error(loginResponse.error.message);
             } else {
                 toast.success("Logged in successfully!");
-                
-                // Multiple redirect strategies for better compatibility
+
+                // Force redirect after successful login
                 setTimeout(() => {
-                    // First try Next.js router
-                    router.push('/');
-                    
-                    // Fallback to hard redirect after a short delay
-                    setTimeout(() => {
-                        if (typeof window !== 'undefined') {
-                            window.location.href = '/';
-                        }
-                    }, 100);
+                    window.location.href = '/';
                 }, 500);
             }
         } catch (error) {
             console.error("Login error:", error);
             setError("Login failed. Please try again.");
+            toast.error("Login failed. Please try again.");
         } finally {
-            setIsLoading(() => false);
+            setIsLoading(false);
         }
     };
 
@@ -250,22 +247,24 @@ export default function Login() {
                         placeholder="rakeshghosh@gmail.com"
                         type="email"
                         disabled={isLoading}
+                        required
                     />
                 </LabelInputContainer>
                 <LabelInputContainer className="mb-4">
                     <Label htmlFor="password">Password</Label>
-                    <Input 
-                        className="text-black" 
-                        id="password" 
-                        name="password" 
-                        placeholder="••••••••" 
-                        type="password" 
+                    <Input
+                        className="text-black"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        type="password"
                         disabled={isLoading}
+                        required
                     />
                 </LabelInputContainer>
 
                 <button
-                    className="group/btn cursor-pointer relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] disabled:opacity-50"
+                    className="group/btn cursor-pointer relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset] disabled:opacity-50 disabled:cursor-not-allowed"
                     type="submit"
                     disabled={isLoading}
                 >

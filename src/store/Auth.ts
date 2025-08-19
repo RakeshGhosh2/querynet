@@ -124,223 +124,148 @@
 
 // )
 
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { persist } from "zustand/middleware";
-import { AppwriteException, ID, Models } from "appwrite";
-import { account } from "@/models/client/config";
+// src/store/Auth.ts
+import { create } from 'zustand';
+import { persist, devtools } from 'zustand/middleware';
+import { account } from '@/models/client/config';
+import { AppwriteException, Models } from 'appwrite';
 
 export interface UserPrefs {
     reputation: number;
 }
 
-interface IAuthStore {
+interface AuthState {
     session: Models.Session | null;
     user: Models.User<UserPrefs> | null;
-    jwt: string | null;
     hydrated: boolean;
     loading: boolean;
-    initialized: boolean;
 
-    setHydrated(): void;
-    initializeAuth(): Promise<void>;
-    verifySession(): Promise<void>;
-    login(
-        email: string,
-        password: string
-    ): Promise<{
-        success: boolean;
-        error?: AppwriteException | null
-    }>
+    // Actions
+    verifySession: () => Promise<void>;
+    login: (email: string, password: string) => Promise<{ error?: AppwriteException }>;
+    logout: () => Promise<void>;
+    createAccount: (name: string, email: string, password: string) => Promise<{ error?: AppwriteException }>;
 
-    createAccount(
-        name: string,
-        email: string,
-        password: string
-    ): Promise<{
-        success: boolean;
-        error?: AppwriteException | null
-    }>
-
-    logout(): Promise<void>
+    // Internal actions
+    setHydrated: (hydrated: boolean) => void;
+    setLoading: (loading: boolean) => void;
 }
 
-export const useAuthStore = create<IAuthStore>()(
-    persist(
-        immer((set, get) => ({
-            session: null,
-            user: null,
-            jwt: null,
-            hydrated: false,
-            loading: false,
-            initialized: false,
+export const useAuthStore = create<AuthState>()(
+    devtools(
+        persist(
+            (set) => ({
+                session: null,
+                user: null,
+                hydrated: false,
+                loading: false,
 
-            setHydrated() {
-                set({ hydrated: true });
-            },
+                setHydrated: (hydrated: boolean) => set({ hydrated }),
+                setLoading: (loading: boolean) => set({ loading }),
 
-            async initializeAuth() {
-                const state = get();
-                if (state.initialized || state.loading) return;
+                verifySession: async () => {
+                    try {
+                        set({ loading: true });
 
-                set({ loading: true });
-
-                try {
-                    // Try to get current session
-                    const session = await account.getSession("current");
-
-                    if (session) {
-                        // Get user and JWT if session exists
-                        const [user, { jwt }] = await Promise.all([
-                            account.get<UserPrefs>(),
-                            account.createJWT()
-                        ]);
-
-                        // Initialize reputation if needed
-                        if (user.prefs?.reputation === undefined) {
-                            const updatedUser = await account.updatePrefs<UserPrefs>({
-                                reputation: 0
-                            });
-                            user.prefs = updatedUser.prefs;
-                        }
+                        const session = await account.getSession('current');
+                        const user = await account.get<UserPrefs>();
 
                         set({
                             session,
                             user,
-                            jwt,
-                            initialized: true
+                            loading: false,
                         });
-                    } else {
-                        // No session found
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    } catch (error) {
+                        console.log('No active session');
                         set({
                             session: null,
                             user: null,
-                            jwt: null,
-                            initialized: true
+                            loading: false,
                         });
                     }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error) {
-                    // Error getting session (likely no session or expired)
-                    console.log("No active session found");
-                    set({
-                        session: null,
-                        user: null,
-                        jwt: null,
-                        initialized: true
-                    });
-                } finally {
-                    set({ loading: false });
-                }
-            },
+                },
 
-            async verifySession() {
-                // Only verify if we have a session stored
-                const currentSession = get().session;
-                if (!currentSession) return;
+                login: async (email: string, password: string) => {
+                    try {
+                        set({ loading: true });
 
-                try {
-                    const session = await account.getSession("current");
-                    if (!session) {
-                        // Session expired or invalid
-                        set({ session: null, user: null, jwt: null });
-                    }
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error) {
-                    // Session is invalid
-                    console.log("Session verification failed, clearing auth state");
-                    set({ session: null, user: null, jwt: null });
-                }
-            },
+                        const session = await account.createEmailPasswordSession(email, password);
+                        const user = await account.get<UserPrefs>();
 
-            async login(email: string, password: string) {
-                set({ loading: true });
-
-                try {
-                    const session = await account.createEmailPasswordSession(email, password);
-                    const [user, { jwt }] = await Promise.all([
-                        account.get<UserPrefs>(),
-                        account.createJWT()
-                    ]);
-
-                    if (user.prefs?.reputation === undefined) {
-                        const updatedUser = await account.updatePrefs<UserPrefs>({
-                            reputation: 0
+                        set({
+                            session,
+                            user,
+                            loading: false,
                         });
-                        user.prefs = updatedUser.prefs;
+
+                        return {};
+                    } catch (error) {
+                        set({ loading: false });
+                        return { error: error as AppwriteException };
                     }
+                },
 
-                    set({ session, user, jwt, initialized: true });
+                logout: async () => {
+                    try {
+                        set({ loading: true });
 
-                    // Force a hard redirect to home page
-                    if (typeof window !== 'undefined') {
-                        window.location.href = '/';
+                        await account.deleteSession('current');
+
+                        set({
+                            session: null,
+                            user: null,
+                            loading: false,
+                        });
+
+                        // Force redirect after logout
+                        if (typeof window !== 'undefined') {
+                            window.location.href = '/';
+                        }
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                        // Clear state anyway
+                        set({
+                            session: null,
+                            user: null,
+                            loading: false,
+                        });
+
+                        if (typeof window !== 'undefined') {
+                            window.location.href = '/';
+                        }
                     }
+                },
 
-                    return { success: true };
-                } catch (error) {
-                    console.error("Login failed:", error);
-                    return {
-                        success: false,
-                        error: error instanceof AppwriteException ? error : null
-                    };
-                } finally {
-                    set({ loading: false });
-                }
-            },
+                createAccount: async (name: string, email: string, password: string) => {
+                    try {
+                        set({ loading: true });
 
-            async createAccount(name: string, email: string, password: string) {
-                set({ loading: true });
+                        await account.create('unique()', email, password, name);
 
-                try {
-                    await account.create(ID.unique(), email, password, name);
-                    return { success: true };
-                } catch (error) {
-                    console.error("Account creation failed:", error);
-                    return {
-                        success: false,
-                        error: error instanceof AppwriteException ? error : null
-                    };
-                } finally {
-                    set({ loading: false });
-                }
-            },
-
-            async logout() {
-                set({ loading: true });
-
-                try {
-                    await account.deleteSessions();
-                } catch (error) {
-                    console.error("Logout failed:", error);
-                    // Continue with local cleanup even if server logout fails
-                } finally {
-                    set({
-                        session: null,
-                        user: null,
-                        jwt: null,
-                        loading: false
-                    });
-
-                    // Force a hard redirect to home page
-                    if (typeof window !== 'undefined') {
-                        window.location.href = '/';
+                        set({ loading: false });
+                        return {};
+                    } catch (error) {
+                        set({ loading: false });
+                        return { error: error as AppwriteException };
                     }
-                }
-            },
-        })),
-
-        {
-            name: "auth",
-            onRehydrateStorage() {
-                return (state, error) => {
-                    if (!error && state) {
-                        state.setHydrated();
-                        // Initialize auth after rehydration
-                        setTimeout(() => state.initializeAuth(), 0);
-                    }
-                }
+                },
+            }),
+            {
+                name: 'auth-storage',
+                partialize: (state) => ({
+                    // Only persist session and user, not loading states
+                    session: state.session,
+                    user: state.user,
+                }),
+                onRehydrateStorage: () => (state) => {
+                    // Mark as hydrated when rehydration is complete
+                    state?.setHydrated(true);
+                },
             }
+        ),
+        {
+            name: 'auth-store',
         }
     )
-)
+);
