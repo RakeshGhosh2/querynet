@@ -1,25 +1,78 @@
+// "use client";
+
+// import { useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// import { useAuthStore } from "@/store/Auth";
+
+// export default function Logout() {
+//     const { logout } = useAuthStore();
+//     const router = useRouter();
+
+//     useEffect(() => {
+//         const performLogout = async () => {
+//             await logout(); // Clear session, user, and jwt in Zustand + Appwrite
+//             router.push("/"); // Redirect to login page after logout
+//         };
+
+//         performLogout();
+//     }, [logout, router]);
+
+//     return (
+//         <div>
+
+//         </div>
+//     );
+// }
+
+
 "use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/Auth";
+import toast from "react-hot-toast";
 
 export default function Logout() {
-    const { logout } = useAuthStore();
+    const { logout, session } = useAuthStore();
     const router = useRouter();
 
     useEffect(() => {
         const performLogout = async () => {
-            await logout(); // Clear session, user, and jwt in Zustand + Appwrite
-            router.push("/"); // Redirect to login page after logout
+            try {
+                if (session) {
+                    await logout(); // This will handle the redirect internally
+                    toast.success("Logged out successfully!");
+                } else {
+                    // If no session, redirect immediately
+                    router.push("/");
+                    setTimeout(() => {
+                        if (typeof window !== 'undefined') {
+                            window.location.href = '/';
+                        }
+                    }, 100);
+                }
+            } catch (error) {
+                console.error("Logout error:", error);
+                toast.error("Logout failed");
+                // Redirect anyway
+                router.push("/");
+                setTimeout(() => {
+                    if (typeof window !== 'undefined') {
+                        window.location.href = '/';
+                    }
+                }, 100);
+            }
         };
 
         performLogout();
-    }, [logout, router]);
+    }, [logout, router, session]);
 
     return (
-        <div>
-
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                <p>Logging out...</p>
+            </div>
         </div>
     );
 }

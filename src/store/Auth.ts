@@ -182,13 +182,13 @@ export const useAuthStore = create<IAuthStore>()(
             async initializeAuth() {
                 const state = get();
                 if (state.initialized || state.loading) return;
-                
+
                 set({ loading: true });
-                
+
                 try {
                     // Try to get current session
                     const session = await account.getSession("current");
-                    
+
                     if (session) {
                         // Get user and JWT if session exists
                         const [user, { jwt }] = await Promise.all([
@@ -204,29 +204,30 @@ export const useAuthStore = create<IAuthStore>()(
                             user.prefs = updatedUser.prefs;
                         }
 
-                        set({ 
-                            session, 
-                            user, 
-                            jwt, 
-                            initialized: true 
+                        set({
+                            session,
+                            user,
+                            jwt,
+                            initialized: true
                         });
                     } else {
                         // No session found
-                        set({ 
-                            session: null, 
-                            user: null, 
-                            jwt: null, 
-                            initialized: true 
+                        set({
+                            session: null,
+                            user: null,
+                            jwt: null,
+                            initialized: true
                         });
                     }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                     // Error getting session (likely no session or expired)
                     console.log("No active session found");
-                    set({ 
-                        session: null, 
-                        user: null, 
-                        jwt: null, 
-                        initialized: true 
+                    set({
+                        session: null,
+                        user: null,
+                        jwt: null,
+                        initialized: true
                     });
                 } finally {
                     set({ loading: false });
@@ -244,6 +245,7 @@ export const useAuthStore = create<IAuthStore>()(
                         // Session expired or invalid
                         set({ session: null, user: null, jwt: null });
                     }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                     // Session is invalid
                     console.log("Session verification failed, clearing auth state");
@@ -253,22 +255,28 @@ export const useAuthStore = create<IAuthStore>()(
 
             async login(email: string, password: string) {
                 set({ loading: true });
-                
+
                 try {
                     const session = await account.createEmailPasswordSession(email, password);
                     const [user, { jwt }] = await Promise.all([
                         account.get<UserPrefs>(),
                         account.createJWT()
                     ]);
-                    
+
                     if (user.prefs?.reputation === undefined) {
                         const updatedUser = await account.updatePrefs<UserPrefs>({
                             reputation: 0
                         });
                         user.prefs = updatedUser.prefs;
                     }
-                    
+
                     set({ session, user, jwt, initialized: true });
+
+                    // Force a hard redirect to home page
+                    if (typeof window !== 'undefined') {
+                        window.location.href = '/';
+                    }
+
                     return { success: true };
                 } catch (error) {
                     console.error("Login failed:", error);
@@ -283,7 +291,7 @@ export const useAuthStore = create<IAuthStore>()(
 
             async createAccount(name: string, email: string, password: string) {
                 set({ loading: true });
-                
+
                 try {
                     await account.create(ID.unique(), email, password, name);
                     return { success: true };
@@ -300,19 +308,24 @@ export const useAuthStore = create<IAuthStore>()(
 
             async logout() {
                 set({ loading: true });
-                
+
                 try {
                     await account.deleteSessions();
                 } catch (error) {
                     console.error("Logout failed:", error);
                     // Continue with local cleanup even if server logout fails
                 } finally {
-                    set({ 
-                        session: null, 
-                        user: null, 
-                        jwt: null, 
-                        loading: false 
+                    set({
+                        session: null,
+                        user: null,
+                        jwt: null,
+                        loading: false
                     });
+
+                    // Force a hard redirect to home page
+                    if (typeof window !== 'undefined') {
+                        window.location.href = '/';
+                    }
                 }
             },
         })),
