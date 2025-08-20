@@ -5,21 +5,27 @@ import { NumberTicker } from "@/components/magicui/number-ticker";
 import { answerCollection, db, questionCollection } from "@/models/name";
 import { Query } from "node-appwrite";
 
-const Page = async ({ params }: { params: { userId: string; userSlug: string } }) => {
+const Page = async ({
+    params
+}: {
+    params: Promise<{ userId: string; userSlug: string }>
+}) => {
+    // Await params first, then use its properties
+    const { userId, userSlug } = await params;
+
     const [user, questions, answers] = await Promise.all([
-        users.get<UserPrefs>(params.userId),
+        users.get<UserPrefs>(userId),
         databases.listDocuments(db, questionCollection, [
-            Query.equal("authorId", params.userId),
+            Query.equal("authorId", userId),
             Query.limit(1), // for optimization
         ]),
         databases.listDocuments(db, answerCollection, [
-            Query.equal("authorId", params.userId),
+            Query.equal("authorId", userId),
             Query.limit(1), // for optimization
         ]),
     ]);
-
+    console.log("user page is ok->")
     return (
-
         <div className="flex h-[500px] w-full flex-col gap-4 lg:h-[250px] lg:flex-row">
             <div className="relative flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden p-20 shadow-2xl rounded-xl bg-white dark:bg-gray-900">
                 <div className="absolute inset-x-4 top-4">
@@ -53,8 +59,6 @@ const Page = async ({ params }: { params: { userId: string; userSlug: string } }
                 <div className="pointer-events-none absolute inset-0 h-full bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
             </div>
         </div>
-
-
     );
 };
 

@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import React from "react";
@@ -8,7 +10,25 @@ import { avatars } from "@/models/client/config";
 import convertDateToRelativeTime from "@/utils/relativeTime";
 import { ShineBorder } from "@/components/magicui/shine-border";
 
-const QuestionCard = ({ ques }: { ques: Models.Document }) => {
+// Define interface for User and Question
+interface User extends Models.Document {
+    name: string;
+    email: string;
+    reputation: number;
+}
+
+interface Question extends Models.Document {
+    title: string;
+    content: string;
+    authorId: string;
+    author: User;
+    tags: string[];
+    attachmentId?: string;
+    totalVotes: number;
+    totalAnswers: number;
+}
+
+const QuestionCard = ({ ques }: { ques: Question }) => {
     
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [height, setHeight] = React.useState(0);
@@ -51,7 +71,7 @@ const QuestionCard = ({ ques }: { ques: Models.Document }) => {
                     <div className="ml-auto flex items-center gap-1">
                         <picture>
                             <img
-                                src={avatars.getInitials(ques.author.name, 24, 24)}//href
+                                src={avatars.getInitials(ques.author.name, 24, 24)}
                                 alt={ques.author.name}
                                 className="rounded-lg"
                             />

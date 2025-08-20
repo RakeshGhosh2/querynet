@@ -11,28 +11,47 @@ const Page = async ({
     params,
     searchParams,
 }: {
-    params: { userId: string; userSlug: string };
-    searchParams: { page?: string };
+    params: Promise<{ userId: string; userSlug: string }>;
+    searchParams: Promise<{ page?: string }>;
 }) => {
-    searchParams.page ||= "1";
+    // Await both params and searchParams first
+    const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
+    
+    console.log("Resolved params:", resolvedParams);
+    console.log("Resolved searchParams:", resolvedSearchParams);
+    
+    const { userId, userSlug } = resolvedParams;
+    const page = resolvedSearchParams.page || "1";
+
+    console.log("User ID:", userId);
+    console.log("User Slug:", userSlug);
+    console.log("Page:", page);
 
     const queries = [
-        Query.equal("authorId", params.userId),
+        Query.equal("authorId", userId),
         Query.orderDesc("$createdAt"),
-        Query.offset((+searchParams.page - 1) * 25),
+        Query.offset((+page - 1) * 25),
         Query.limit(25),
     ];
+
 
     const answers = await databases.listDocuments(db, answerCollection, queries);
 
     answers.documents = await Promise.all(
         answers.documents.map(async ans => {
+            
             const question = await databases.getDocument(db, questionCollection, ans.questionId, [
                 Query.select(["title"]),
             ]);
+            
+            
             return { ...ans, question };
         })
     );
+
+    console.log("Final answers data:", answers.documents.length, "answers processed");
+    console.log("Answer fetched successful->");
+
 
     return (
         <div className="px-4">

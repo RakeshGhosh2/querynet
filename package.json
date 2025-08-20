@@ -27,7 +27,7 @@
     "mini-svg-data-uri": "^1.4.4",
     "motion": "^12.23.12",
     "next": "15.4.2",
-    "node-appwrite": "^17.1.0",
+    "node-appwrite": "^17.2.0",
     "postcss": "^8.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",

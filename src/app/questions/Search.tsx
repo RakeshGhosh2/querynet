@@ -20,7 +20,7 @@ const Search = () => {
         newSearchParams.set("search", search);
         router.push(`${pathname}?${newSearchParams}`);
     };
-
+    console.log("question find->")
     return (
         <form className="flex w-full flex-row gap-4" onSubmit={handleSearch}>
             <Input

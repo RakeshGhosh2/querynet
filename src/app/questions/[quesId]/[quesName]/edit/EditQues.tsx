@@ -3,12 +3,11 @@
 import QuestionForm from "@/components/QuestionForm";
 import { useAuthStore } from "@/store/Auth";
 import slugify from "@/utils/slugify";
-import { Models } from "appwrite";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-
-const EditQues = ({ question }: { question: Models.Document  & Record<string, any>}) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const EditQues = ({ question }: { question: any }) => {
     const { user } = useAuthStore();
     const router = useRouter();
 
@@ -16,19 +15,20 @@ const EditQues = ({ question }: { question: Models.Document  & Record<string, an
         if (question.authorId !== user?.$id) {
             router.push(`/questions/${question.$id}/${slugify(question.title)}`);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);//change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (user?.$id !== question.authorId) return null;
+    console.log("Edit successfull->")
 
     return (
-       
-            <div className="flex min-h-screen items-center justify-center py-20 px-4">
-                <div className="w-full max-w-4xl">
-                    <h1 className="mb-10 text-2xl text-center">Edit your public question</h1>
-                    <QuestionForm question={question} />
-                </div>
+        <div className="flex justify-center items-center min-h-screen ">
+            <div className="w-full max-w-4xl p-6  rounded-xl shadow-lg">
+                <h1 className="mb-6 text-2xl text-center font-bold">Edit your public question</h1>
+                <QuestionForm question={question} />
             </div>
+        </div>
+
     );
 };
 
