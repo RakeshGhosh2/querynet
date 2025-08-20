@@ -1,4 +1,4 @@
-
+export const dynamic = "force-dynamic";
 import QuestionCard from "@/components/QuestionCard";
 import { answerCollection, db, questionCollection, voteCollection } from "@/models/name";
 import { databases, users } from "@/models/server/config";
@@ -65,7 +65,7 @@ const LatestQuestions = async () => {
     return (
         <div className="space-y-6">
             
-            {questions.documents.map(question => (
+            {questions.documents.map((question) => (
                 <QuestionCard key={question.$id} ques={question} />
             ))}
         </div>
