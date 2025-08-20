@@ -15,7 +15,7 @@ export default function Home() {
       <HeroSectionHeader />
       <HeroSection />
       <h2 className="text-2xl px-15 font-semibold mb-4">Latest Questions :-</h2>
-      <div className="flex flex-col md:flex-row gap-6 px-4 md:px-12 my-10 h-[500px]">
+      <div className="flex flex-col md:flex-row gap-6 px-4 md:px-12 my-10 h-[600px]">
         <div className="md:w-2/3 w-full h-full overflow-y-auto">
 
           <LatestQuestions />
