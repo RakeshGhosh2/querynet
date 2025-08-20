@@ -74,6 +74,7 @@
 
 // export default LatestQuestions;
 
+// src/app/components/LatestQuestions.tsx
 export const dynamic = "force-dynamic";
 
 import { databases, users } from "@/models/server/config";
@@ -106,60 +107,148 @@ interface Question extends Models.Document {
     totalAnswers: number;
 }
 
-const LatestQuestions = async ({
-    searchParams,
-}: {
-    searchParams?: { page?: string; tag?: string; search?: string };
-}) => {
-    const page = searchParams?.page ?? "1";
-    const queries = [
-        Query.orderDesc("$createdAt"),
-        Query.offset((+page - 1) * 5),
-        Query.limit(5),
-    ];
+interface LatestQuestionsProps {
+    searchParams?: { 
+        page?: string; 
+        tag?: string; 
+        search?: string; 
+    };
+    limit?: number;
+    showPagination?: boolean;
+}
 
-    const questions = await databases.listDocuments<Question>(
-        db,
-        questionCollection,
-        queries
-    );
+const LatestQuestions = async ({ 
+    searchParams = {}, 
+    limit = 5, 
+    showPagination = false 
+}: LatestQuestionsProps) => {
+    try {
+        const page = searchParams?.page ?? "1";
+        const queries = [
+            Query.orderDesc("$createdAt"),
+            Query.offset((+page - 1) * limit),
+            Query.limit(limit),
+        ];
 
-    questions.documents = await Promise.all(
-        questions.documents.map(async (ques) => {
-            const [author, answers, votes] = await Promise.all([
-                users.get<UserPrefs>(ques.authorId),
-                databases.listDocuments(db, answerCollection, [
-                    Query.equal("questionId", ques.$id),
-                    Query.limit(1),
-                ]),
-                databases.listDocuments(db, voteCollection, [
-                    Query.equal("type", "question"),
-                    Query.equal("typeId", ques.$id),
-                    Query.limit(1),
-                ]),
-            ]);
+        // Add search filters if provided
+        if (searchParams.tag) {
+            queries.push(Query.equal("tags", searchParams.tag));
+        }
 
-            return {
-                ...ques,
-                totalAnswers: answers.total,
-                totalVotes: votes.total,
-                author: {
-                    $id: author.$id,
-                    reputation: author.prefs.reputation,
-                    name: author.name,
-                },
-            } as Question;
-        })
-    );
+        if (searchParams.search) {
+            queries.push(
+                Query.or([
+                    Query.search("title", searchParams.search),
+                    Query.search("content", searchParams.search),
+                ])
+            );
+        }
 
-    return (
+        console.log("Fetching questions with queries:", queries);
 
-        <div className="space-y-6">
-            {questions.documents.map((ques) => (
-                <QuestionCard key={ques.$id} ques={ques} />
-            ))}
-        </div>
-    );
+        const questions = await databases.listDocuments<Question>(
+            db,
+            questionCollection,
+            queries
+        );
+
+        console.log("Raw questions fetched:", questions.total);
+
+        if (!questions.documents || questions.documents.length === 0) {
+            return (
+                <div className="space-y-6">
+                    <div className="text-center text-gray-500 py-8">
+                        <p>No questions found.</p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Fetch additional data for each question
+        const questionsWithDetails = await Promise.all(
+            questions.documents.map(async (ques) => {
+                try {
+                    const [author, answers, votes] = await Promise.all([
+                        users.get<UserPrefs>(ques.authorId).catch(err => {
+                            console.error(`Error fetching user ${ques.authorId}:`, err);
+                            return {
+                                $id: ques.authorId,
+                                name: "Unknown User",
+                                prefs: { reputation: 0 }
+                            };
+                        }),
+                        databases.listDocuments(db, answerCollection, [
+                            Query.equal("questionId", ques.$id),
+                            Query.limit(1),
+                        ]).catch(err => {
+                            console.error(`Error fetching answers for ${ques.$id}:`, err);
+                            return { total: 0 };
+                        }),
+                        databases.listDocuments(db, voteCollection, [
+                            Query.equal("type", "question"),
+                            Query.equal("typeId", ques.$id),
+                            Query.limit(1),
+                        ]).catch(err => {
+                            console.error(`Error fetching votes for ${ques.$id}:`, err);
+                            return { total: 0 };
+                        }),
+                    ]);
+
+                    return {
+                        ...ques,
+                        totalAnswers: answers.total || 0,
+                        totalVotes: votes.total || 0,
+                        author: {
+                            $id: author.$id,
+                            reputation: author.prefs?.reputation || 0,
+                            name: author.name || "Unknown User",
+                        },
+                    } as Question;
+                } catch (error) {
+                    console.error(`Error processing question ${ques.$id}:`, error);
+                    return {
+                        ...ques,
+                        totalAnswers: 0,
+                        totalVotes: 0,
+                        author: {
+                            $id: ques.authorId,
+                            reputation: 0,
+                            name: "Unknown User",
+                        },
+                    } as Question;
+                }
+            })
+        );
+
+        console.log("Questions with details processed:", questionsWithDetails.length);
+
+        return (
+            <div className="space-y-6">
+                {questionsWithDetails.map((ques) => (
+                    <QuestionCard key={ques.$id} ques={ques} />
+                ))}
+                {questionsWithDetails.length === 0 && (
+                    <div className="text-center text-gray-500 py-8">
+                        <p>No questions available at the moment.</p>
+                    </div>
+                )}
+            </div>
+        );
+
+    } catch (error) {
+        console.error("Error in LatestQuestions component:", error);
+        
+        return (
+            <div className="space-y-6">
+                <div className="text-center text-red-500 py-8">
+                    <p>Error loading questions. Please try again later.</p>
+                    <small className="text-gray-500">
+                        {error instanceof Error ? error.message : "Unknown error"}
+                    </small>
+                </div>
+            </div>
+        );
+    }
 };
 
 export default LatestQuestions;
