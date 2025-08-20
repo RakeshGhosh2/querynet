@@ -17,7 +17,7 @@ const Page = async ({
     // Await both params and searchParams first
     const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
     
-    const { userId, userSlug } = resolvedParams;
+    const { userId,  } = resolvedParams;
     const page = resolvedSearchParams.page || "1";
 
     const queries = [

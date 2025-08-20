@@ -1,7 +1,5 @@
 
 export const runtime = "nodejs";
-
-
 import { db } from "../name";
 import creatQuestionCollection from "./question.collection";
 import createAnswerCollection from "./answer.collection";

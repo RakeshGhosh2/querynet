@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 import { account } from '@/models/client/config';
 import { AppwriteException, Models } from 'appwrite';
+import { ReactNode } from 'react';
 
 export interface UserPrefs {
     email: ReactNode;

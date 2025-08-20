@@ -11,7 +11,7 @@ const Page = async ({
     params: Promise<{ userId: string; userSlug: string }>
 }) => {
     // Await params first, then use its properties
-    const { userId, userSlug } = await params;
+    const { userId,  } = await params;
 
     const [user, questions, answers] = await Promise.all([
         users.get<UserPrefs>(userId),

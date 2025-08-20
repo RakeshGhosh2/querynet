@@ -16,7 +16,7 @@ const Layout = async ({
     params: Promise<{ userId: string; userSlug: string }>;
 }) => {
     // Await params first, then use its properties
-    const { userId, userSlug } = await params;
+    const { userId,  } = await params;
 
     // Now safely use userId
     const user = await users.get<UserPrefs>(userId);
