@@ -5,6 +5,10 @@ import { account } from '@/models/client/config';
 import { AppwriteException, Models } from 'appwrite';
 
 export interface UserPrefs {
+    email: ReactNode;
+    $createdAt: string | number | Date;
+    $updatedAt: string | number | Date;
+    name(name: any, arg1: number, arg2: number): string | Blob | undefined;
     reputation: number;
 }
 
