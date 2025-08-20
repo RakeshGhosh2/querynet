@@ -127,6 +127,8 @@
 // export default Page;
 
 
+
+
 import Pagination from "@/components/Pagination";
 import { answerCollection, db, questionCollection, voteCollection } from "@/models/name";
 import { databases } from "@/models/server/config";
@@ -136,83 +138,75 @@ import Link from "next/link";
 import { Query } from "node-appwrite";
 import React from "react";
 
+interface VoteWithQuestion {
+    $id: string;
+    $createdAt: string;
+    voteStatus: "upvoted" | "downvoted";
+    question: { $id: string; title: string };
+}
+
 const Page = async ({
     params,
     searchParams,
 }: {
-    params: Promise<{ userId: string; userSlug: string }>;
-    searchParams: Promise<{ page?: string; voteStatus?: "upvoted" | "downvoted" }>;
+    params: { userId: string; userSlug: string };
+    searchParams: { page?: string; voteStatus?: "upvoted" | "downvoted" };
 }) => {
-    // Await both params and searchParams first
-    const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
-    
-    
-    const { userId, userSlug } = resolvedParams;
-    const page = resolvedSearchParams.page || "1";
-    const voteStatus = resolvedSearchParams.voteStatus;
-
-    console.log("User ID:", userId);
-    console.log("User Slug:", userSlug);
-    console.log("Page:", page);
-    console.log("Vote Status:", voteStatus);
+    const page = searchParams.page ? parseInt(searchParams.page) : 1;
 
     const query = [
-        Query.equal("votedById", userId),
+        Query.equal("votedById", params.userId),
         Query.orderDesc("$createdAt"),
-        Query.offset((+page - 1) * 25),
+        Query.offset((page - 1) * 25),
         Query.limit(25),
     ];
 
-    if (voteStatus) query.push(Query.equal("voteStatus", voteStatus));
+    if (searchParams.voteStatus) query.push(Query.equal("voteStatus", searchParams.voteStatus));
 
+    const votesResponse = await databases.listDocuments(db, voteCollection, query);
 
-    const votes = await databases.listDocuments(db, voteCollection, query);
+    // Map votes to include the question safely
+    const votes: VoteWithQuestion[] = (
+        await Promise.all(
+            votesResponse.documents.map(async (vote: any) => {
+                try {
+                    if (vote.type === "question") {
+                        const question = await databases.getDocument(
+                            db,
+                            questionCollection,
+                            vote.typeId,
+                            [Query.select(["title"])]
+                        );
+                        return { ...vote, question };
+                    }
 
-    votes.documents = await Promise.all(
-        votes.documents.map(async vote => {
-            
-            const questionOfTypeQuestion =
-                vote.type === "question"
-                    ? await databases.getDocument(db, questionCollection, vote.typeId, [
-                        Query.select(["title"]),
-                    ])
-                    : null;
-
-            if (questionOfTypeQuestion) {
-                return {
-                    ...vote,
-                    question: questionOfTypeQuestion,
-                };
-            }
-
-            const answer = await databases.getDocument(db, answerCollection, vote.typeId);
-            const questionOfTypeAnswer = await databases.getDocument(
-                db,
-                questionCollection,
-                answer.questionId,
-                [Query.select(["title"])]
-            );
-
-            
-            return {
-                ...vote,
-                question: questionOfTypeAnswer,
-            };
-        })
-    );
-
-    console.log("Final votes data:", votes.documents.length, "votes processed");
-    console.log("Vote fetch successful->")
+                    // vote.type === "answer"
+                    const answer = await databases.getDocument(db, answerCollection, vote.typeId);
+                    const questionOfAnswer = await databases.getDocument(
+                        db,
+                        questionCollection,
+                        answer.questionId,
+                        [Query.select(["title"])]
+                    );
+                    return { ...vote, question: questionOfAnswer };
+                } catch (err) {
+                    // Skip missing documents
+                    console.warn(`Skipping vote ${vote.$id} due to missing document.`);
+                    return null;
+                }
+            })
+        )
+    ).filter(Boolean) as VoteWithQuestion[];
 
     return (
         <div className="px-4">
             <div className="mb-4 flex justify-between">
-                <p>{votes.total} votes</p>
+                <p>{votes.length} votes</p>
                 <ul className="flex gap-1">
                     <li>
                         <Link
-                            href={`/users/${userId}/${userSlug}/votes`}
-                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${!voteStatus ? "bg-white/20" : "hover:bg-white/20"
+                            href={`/users/${params.userId}/${params.userSlug}/votes`}
+                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${!searchParams.voteStatus ? "bg-white/20" : "hover:bg-white/20"
                                 }`}
                         >
                             All
@@ -220,10 +214,8 @@ const Page = async ({
                     </li>
                     <li>
                         <Link
-                            href={`/users/${userId}/${userSlug}/votes?voteStatus=upvoted`}
-                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${voteStatus === "upvoted"
-                                    ? "bg-white/20"
-                                    : "hover:bg-white/20"
+                            href={`/users/${params.userId}/${params.userSlug}/votes?voteStatus=upvoted`}
+                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${searchParams.voteStatus === "upvoted" ? "bg-white/20" : "hover:bg-white/20"
                                 }`}
                         >
                             Upvotes
@@ -231,10 +223,8 @@ const Page = async ({
                     </li>
                     <li>
                         <Link
-                            href={`/users/${userId}/${userSlug}/votes?voteStatus=downvoted`}
-                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${voteStatus === "downvoted"
-                                    ? "bg-white/20"
-                                    : "hover:bg-white/20"
+                            href={`/users/${params.userId}/${params.userSlug}/votes?voteStatus=downvoted`}
+                            className={`block w-full rounded-full px-3 py-0.5 duration-200 ${searchParams.voteStatus === "downvoted" ? "bg-white/20" : "hover:bg-white/20"
                                 }`}
                         >
                             Downvotes
@@ -242,8 +232,9 @@ const Page = async ({
                     </li>
                 </ul>
             </div>
+
             <div className="mb-4 max-w-3xl space-y-6">
-                {votes.documents.map(vote => (
+                {votes.map((vote) => (
                     <div
                         key={vote.$id}
                         className="rounded-xl border border-white/40 p-4 duration-200 hover:bg-white/10"
@@ -265,7 +256,8 @@ const Page = async ({
                     </div>
                 ))}
             </div>
-            <Pagination total={votes.total} limit={25} />
+
+            <Pagination total={votesResponse.total} limit={25} />
         </div>
     );
 };
