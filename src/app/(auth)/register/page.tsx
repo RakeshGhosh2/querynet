@@ -32,7 +32,6 @@ const LabelInputContainer = ({
 
 export default function Register() {
     const { login, createAccount } = useAuthStore();
-    const router = useRouter();
     const [isLoading, setIsLoading] = React.useState(false);
     const [error, setError] = React.useState("");
 
@@ -106,7 +105,7 @@ export default function Register() {
                             className="text-black" 
                             id="firstname" 
                             name="firstname" 
-                            placeholder="Rakesh" 
+                            placeholder="First Name" 
                             type="text"
                             disabled={isLoading}
                             required
@@ -118,7 +117,7 @@ export default function Register() {
                             className="text-black" 
                             id="lastname" 
                             name="lastname" 
-                            placeholder="Ghosh" 
+                            placeholder="Last Name" 
                             type="text"
                             disabled={isLoading}
                             required
@@ -131,7 +130,7 @@ export default function Register() {
                         className="text-black"
                         id="email"
                         name="email"
-                        placeholder="rakeshghosh@gmail.com"
+                        placeholder="demo@gmail.com"
                         type="email"
                         disabled={isLoading}
                         required

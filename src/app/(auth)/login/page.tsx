@@ -93,7 +93,7 @@ export default function Login() {
                         className="text-black"
                         id="email"
                         name="email"
-                        placeholder="rakeshghosh@gmail.com"
+                        placeholder="demo@gmail.com"
                         type="email"
                         disabled={isLoading}
                         required
